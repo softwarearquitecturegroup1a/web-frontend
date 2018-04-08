@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import { Link, IndexLink } from "react-router";
 
 class Logo extends Component {
   render(){
     return(
-      <a className="navbar-brand js-scroll-trigger" href="index.html">Bici-UN</a>
+      <IndexLink className="navbar-brand js-scroll-trigger" to="/">Bici-UN</IndexLink>
     );
   }
 }
@@ -14,7 +15,7 @@ class LinksCollapse extends Component{
       <div className="collapse navbar-collapse" id="navbarResponsive">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item mx-0 mx-lg-1">
-            <a className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="login.html">Login</a>
+            <Link className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/login">Login</Link>
           </li>
         </ul>
       </div>

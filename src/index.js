@@ -1,22 +1,18 @@
-import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
-import NavBar from './NavBar';
-import PageContent from './PageContent';
-import Footer from './Footer';
-import registerServiceWorker from './registerServiceWorker';
+import React from 'react';
+import { Router, Route, browserHistory, IndexRoute } from 'react-router'
+import { render } from 'react-dom'
 
+import App from "./mainLayout/App";
 
-class App extends Component {
-    render() {
-        return (
-            <div id="page-top" className="App">
-                <NavBar />
-                <PageContent />
-                <Footer/>
-            </div>
-        );
-    }
-}
+// Pages
+import PageHome from './pages/PageHome'
+import PageLogin from './pages/PageLogin'
 
-ReactDOM.render(<App />, document.getElementById('root'));
-registerServiceWorker();
+render((
+  <Router history={browserHistory}>
+    <Route path="/" component={App} >
+      <IndexRoute component={PageHome}/>
+      <Route path="login" component={PageLogin}/>
+    </Route>
+  </Router>
+), document.getElementById('root'))
