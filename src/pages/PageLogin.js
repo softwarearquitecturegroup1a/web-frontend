@@ -1,22 +1,79 @@
 import React, { Component } from 'react';
+import axios from "axios";
 
 class Formulario extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: '',
+      identification: '',
+      userError: '',
+      identificationError: '',
+    }
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    // TODO: Enviar peticion al servicio login
+    const user = this.state.user;
+    const identification = this.state.identification;
+    let error = true;
+
+    if (!user || user.length < 1) {
+      this.setState({ userError: 'Escriba un usuario valido.' })
+      error = true;
+    }
+
+    if (!identification || identification.length < 1) {
+      this.setState({ identificationError: 'Identificacion invalida.' })
+      error = true;
+    }
+
+    var data = JSON.stringify({
+      user: user,
+      id: identification
+    });
+
+    var GQl = JSON.stringify({
+      query: "{ allPrestamos { solicitud }}"
+    });
+
+    axios({
+      headers: { 'Content-Type': 'application/json' }, 
+      url: "http://localhost:5000/graphql",
+      method: "POST",
+      data: GQl,
+      responseType: 'json'
+    })
+      .then(function (response) {
+        console.log(response.data);
+      });
+  }
+
+  handleUserChange(event) {
+    this.setState({ user: event.target.value });
+  }
+
+  handleIdentificationChange(event) {
+    this.setState({ identification: event.target.value });
+  }
+
   render() {
     return (
-      <form name="sentMessage" id="contactForm" noValidate="novalidate">
+      <form name="sentMessage" id="contactForm" noValidate="novalidate" onSubmit={this.handleSubmit.bind(this)} action="/">
         <div className="control-group">
           <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
             <label>Usuario</label>
-            <input className="form-control text-center" id="user" type="text" placeholder="Usuario" required="required" data-validation-required-message="Please enter your user." />
-            <p className="help-block text-danger"></p>
+            <input className="form-control text-center" id="user" type="text" value={this.state.user} placeholder="Usuario" required="required" onChange={this.handleUserChange.bind(this)} />
+            <p className="help-block text-danger">{this.state.userError}</p>
           </div>
         </div>
 
         <div className="control-group">
           <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
             <label>Identificacion</label>
-            <input className="form-control text-center" id="identification" type="number" placeholder="Identificacion" required="required" data-validation-required-message="Please enter your identification number." />
-            <p className="help-block text-danger"></p>
+            <input className="form-control text-center" id="identification" type="number" value={this.state.identification} placeholder="Identificacion" required="required" onChange={this.handleIdentificationChange.bind(this)} />
+            <p className="help-block text-danger">{this.state.identificationError}</p>
           </div>
         </div>
         <br />
@@ -32,7 +89,7 @@ class Formulario extends Component {
 class PageLogin extends Component {
   render() {
     return (
-      <section id="contact">
+      <section id="contact" style={{ "paddingTop": "calc(6rem + 72px)" }}>
         <div className="container">
           <h2 className="text-center text-uppercase text-secondary mb-0">Login</h2>
           <hr className="star-dark mb-5" />
