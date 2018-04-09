@@ -18,8 +18,8 @@ render((
     <Route path="/" component={App} >
       <IndexRoute component={PageHome}/>
       <Route path="/entregar" component={PageDeliver}/>
-      <Route path="/perfil" component={PageProfile}/>
-      <Route path="/solicitar" component={PageRequest}/>
+      <Route path="/profile" component={PageProfile}/>
+      <Route path="/request" component={PageRequest}/>
       <Route path="/login" component={PageLogin}/>
     </Route>
   </Router>
