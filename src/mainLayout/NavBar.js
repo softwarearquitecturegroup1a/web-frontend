@@ -36,7 +36,7 @@ class LinksCollapse extends Component {
             <NavBarLink requireNoSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" value="Login" to="/login"/>
           </li>
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/profile" value="Perfil"/>
+            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/perfil" value="Perfil"/>
           </li>
           <li className="nav-item mx-0 mx-lg-1">
             <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/" value="Logout"/>
