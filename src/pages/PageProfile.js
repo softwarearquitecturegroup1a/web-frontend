@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class PageHome extends Component {
+class PageProfile extends Component {
     render() {
         return (
 
@@ -48,4 +48,4 @@ class PageHome extends Component {
     }
 }
 
-export default PageHome;
+export default PageProfile;

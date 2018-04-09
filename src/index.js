@@ -11,6 +11,7 @@ import PageProfile from './pages/PageProfile'
 import PageDeliver from './pages/pageDeliver';
 import AppDeliver from './mainLayout/AppDeliver';
 import AppLogin from './mainLayout/AppLogin';
+import PageRequest from './pages/pageRequest';
 
 render((
   <Router history={browserHistory}>
@@ -18,11 +19,12 @@ render((
       <IndexRoute component={PageHome}/>
     </Route>
     <Route path="/" component={AppDeliver} >
-      <Route path="entregar" component={PageDeliver}/>
+      <Route path="deliver" component={PageDeliver}/>
+      <Route path="profile" component={PageProfile}/>
+      <Route path="request" component={PageRequest}/>
     </Route>
     <Route path="/" component={AppLogin} >
       <Route path="login" component={PageLogin}/>
-      <Route path="profile" component={PageProfile}/>
     </Route>
   </Router>
 ), document.getElementById('root'))
