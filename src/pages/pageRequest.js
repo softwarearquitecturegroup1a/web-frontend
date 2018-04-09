@@ -1,5 +1,33 @@
 import React, { Component } from 'react';
 
+class Request extends Component{
+    constructor(props){
+        super(props);
+        this.state = {
+            start: '',
+            end:''
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    handleStartChange(event){
+        this.setState({start: event.target.value});
+                
+    }
+
+    handleEndChange(event){
+        this.setState({end: event.target.value});
+                
+    }
+
+    handleSubmit(event){
+        event.preventDefault();
+        const start = this.state.start;
+        const end = this.state.end;
+    }
+}
 class PageRequest extends Component {
     render() {
         return (
