@@ -8,19 +8,13 @@ import App from "./mainLayout/App";
 import PageHome from './pages/PageHome'
 import PageLogin from './pages/PageLogin'
 import PageDeliver from './pages/pageDeliver';
-import AppDeliver from './mainLayout/AppDeliver';
-import AppLogin from './mainLayout/AppLogin';
 
 render((
   <Router history={browserHistory}>
     <Route path="/" component={App} >
       <IndexRoute component={PageHome}/>
-    </Route>
-    <Route path="/" component={AppDeliver} >
-      <Route path="entregar" component={PageDeliver}/>
-    </Route>
-    <Route path="/" component={AppLogin} >
-      <Route path="login" component={PageLogin}/>
+      <Route path="/login" component={PageLogin}/>
+      <Route path="/entregar" component={PageDeliver}/>
     </Route>
   </Router>
 ), document.getElementById('root'))

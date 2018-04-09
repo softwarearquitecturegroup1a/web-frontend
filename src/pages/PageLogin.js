@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import axios from "axios";
+import GlReuqest from '../graphQLUtils';
+import cookie from 'react-cookies'
 
 class Formulario extends Component {
   constructor(props) {
@@ -34,20 +35,28 @@ class Formulario extends Component {
       id: identification
     });
 
-    var GQl = JSON.stringify({
-      query: "{ allPrestamos { solicitud }}"
-    });
+    // Ejemplo de uso GraphQL
 
-    axios({
-      headers: { 'Content-Type': 'application/json' }, 
-      url: "http://localhost:5000/graphql",
-      method: "POST",
-      data: GQl,
-      responseType: 'json'
-    })
-      .then(function (response) {
-        console.log(response.data);
-      });
+    var request = `mutation{
+      createPrestamo(prestamo: {
+        student_id: 12,
+        solicitud: "fdgfdgdfgf"
+      }){
+        id
+        solicitud
+      }
+    }`
+
+    // GlReuqest( request, null, (status, errors) => {
+    //   errors.forEach((item) => {
+    //       console.log(item)
+    //     }
+    //   )
+    // });
+
+    cookie.save('userName', user, { path: '/', });
+    cookie.save('session', identification, { path: '/', });
+
   }
 
   handleUserChange(event) {
