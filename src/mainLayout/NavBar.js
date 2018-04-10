@@ -15,9 +15,9 @@ function NavBarLink(props) {
   let session = cookie.load("session");
 
   if (session && props.requireSession) {
-    return (<Link className={props.className} to={props.to}>{props.value}</Link>)
+    return (<Link onClick={() => props.onClick ? props.onClick() : null} className={props.className} to={props.to}>{props.value}</Link>)
   } else if (!session && props.requireNoSession) {
-    return (<Link className={props.className} to={props.to}>{props.value}</Link>)
+    return (<Link onClick={() => props.onClick ? props.onClick() : null} className={props.className} to={props.to}>{props.value}</Link>)
   } else {
     return "";
   }
@@ -28,18 +28,24 @@ class LinksCollapse extends Component {
     super(props);
   }
 
+  handleLogout(event) {
+    cookie.remove('userName', { path: '/', });
+    cookie.remove('session', { path: '/', });
+    console.log("cerrar session");
+  }
+
   render() {
     return (
       <div className="collapse navbar-collapse" id="navbarResponsive">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireNoSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" value="Login" to="/login"/>
+            <NavBarLink requireNoSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" value="Login" to="/login" />
           </li>
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/perfil" value="Perfil"/>
+            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/perfil" value="Perfil" />
           </li>
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/" value="Logout"/>
+            <NavBarLink onClick={this.handleLogout.bind(this)} requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/" value="Logout" />
           </li>
         </ul>
       </div>

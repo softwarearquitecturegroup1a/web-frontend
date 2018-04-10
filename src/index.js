@@ -11,8 +11,6 @@ import PageProfile from './pages/PageProfile'
 import PageDeliver from './pages/pageDeliver';
 import PageRequest from './pages/pageRequest';
 
-
-
 render((
   <Router history={browserHistory}>
     <Route path="/" component={App} >

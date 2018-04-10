@@ -31,7 +31,7 @@ class Request extends Component{
 class PageRequest extends Component {
     render() {
         return (
-            <section id="request">
+            <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
                 <div class="container">
                     <h2 class="text-center text-uppercase text-secondary mb-0">Inicia tu viaje</h2>
                     <hr class="star-dark mb-5" />
