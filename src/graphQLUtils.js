@@ -14,7 +14,7 @@ export default function GraphQLRequest(requestText, handleResponse, handleError)
 
   axios({
     headers: { 'Content-Type': 'application/json' },
-    url: "http://localhost:5000/graphql",
+    url: "http://35.227.88.166/graphql",
     method: "POST",
     data: GQl,
     responseType: 'json'

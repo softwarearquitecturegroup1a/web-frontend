@@ -37,26 +37,26 @@ class Formulario extends Component {
 
     // Ejemplo de uso GraphQL
 
-    var request = `mutation{
-      createPrestamo(prestamo: {
-        student_id: 12,
-        solicitud: "fdgfdgdfgf"
-      }){
-        id
-        solicitud
+    var request = `query{
+      userById(id: ${identification}){
+        name
+        lastname
+        email
+        id_code
       }
     }`
 
-    // GlReuqest( request, null, (status, errors) => {
-    //   errors.forEach((item) => {
-    //       console.log(item)
-    //     }
-    //   )
-    // });
-
-    cookie.save('userName', user, { path: '/', });
-    cookie.save('session', identification, { path: '/', });
-
+    GlReuqest( 
+      request, 
+      (data) => {
+        cookie.save('nombre', data.userById.name, { path: '/', });
+        cookie.save('apellido', data.userById.lastname, { path: '/', });
+        cookie.save('identificacion', data.userById.id_code, { path: '/', });
+        cookie.save('session', identification, { path: '/', });
+      }, 
+      (status, data) => {
+        
+      });
   }
 
   handleUserChange(event) {
