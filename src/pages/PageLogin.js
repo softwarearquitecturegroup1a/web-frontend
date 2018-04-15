@@ -30,13 +30,7 @@ class Formulario extends Component {
       error = true;
     }
 
-    var data = JSON.stringify({
-      user: user,
-      id: identification
-    });
-
     // Ejemplo de uso GraphQL
-
     var request = `query{
       userById(id: ${identification}){
         name

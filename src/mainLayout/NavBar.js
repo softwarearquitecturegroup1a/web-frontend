@@ -24,9 +24,6 @@ function NavBarLink(props) {
 }
 
 class LinksCollapse extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   handleLogout(event) {
     cookie.remove('userName', { path: '/', });

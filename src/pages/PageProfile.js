@@ -1,15 +1,96 @@
 import React, { Component } from 'react';
-import cookie from 'react-cookies'
+import cookie from 'react-cookies';
+import GraphQLRequest from '../graphQLUtils';
+
+class Prestamo extends Component {
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+
+    var fecha = new Date(this.props.prestamo.solicitud);
+
+    // let request = `
+    // query{
+    //   bicicletaById(serial: ${this.props.prestamo.bici_id}){
+    //     serial
+    //     marca
+    //     color
+    //     estado
+    //   }
+    // }`;    
+
+    // var bicicleta;
+    // GraphQLRequest(request,
+    //   function (data) { // SI fue exitosa la consulta
+    //     bicicleta = data.bicicletaById;
+    //   },
+    //   function (status, errors) {
+    //     console.error(status);
+    //   }
+    // );
+
+    return (
+      <tr>
+        <td>{this.props.consec}</td>
+        <td>{fecha.getDate()}/{fecha.getMonth() + 1}/{fecha.getFullYear()}</td>
+        <td>Bicicleta: {this.props.prestamo.bici_id}</td>
+      </tr>
+    )
+  }
+}
 
 class Historial extends Component {
+  constructor(props){
+    super(props);
+
+    let request = `
+    query{
+      allPrestamos{
+        id
+        student_id
+        bici_id
+        solicitud
+      }
+    }`;
+
+    var prestamos = [];
+    var consec = 1;
+    GraphQLRequest(request,
+      function(data){ // SI fue exitosa la consulta
+        data.allPrestamos.forEach((prestamo)=>{
+          if (prestamo.student_id === parseInt(props.identificacion)){
+            prestamos.push(<Prestamo prestamo={prestamo} consec={consec} key={prestamo.id}/>);
+            consec++;
+          }
+        });
+      },
+      function(status, errors){
+        console.error(status);
+      }
+    );
+
+    this.state = {
+      prestamos,
+    }
+
+  }
+
   render(){
     return (
       <div className="container">
         <hr size="2px" color="black" />
         <h3 className="text-center text-uppercase text-secondary mb-0">Historial de Prestamos</h3>
         <div className="row">
-          <div className="col-lg-8 mx-auto">
-          </div>
+          <table className="col-lg-8 mx-auto">
+            <thead>
+              
+            </thead>
+            <tbody>
+              {this.state.prestamos}
+            </tbody>
+          </table>
         </div>
       </div>
     )
@@ -60,7 +141,7 @@ class PageProfile extends Component {
           </div>
         </div>
 
-        <Historial/>
+        <Historial identificacion={this.state.identificacion}/>
 
       </section>
 
