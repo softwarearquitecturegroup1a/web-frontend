@@ -82,13 +82,14 @@ class Request extends Component{
               
             });
         
-        var bicid = cookie.load('bicicleta')
+        
 
         
     }
 
     render(){
         return(
+            
 
             <form name="sentMessage" id="contactForm" novalidate="novalidate" onSubmit={this.handleSubmit.bind(this)} action="/">
                         <div class="control-group">
@@ -121,7 +122,7 @@ class Request extends Component{
                         <div id="success"></div>
                         <div class="form-group text-center">
                         <a class="portfolio-item d-block mx-auto" href="#bicishow">
-                            <button type="submit" class="btn btn-primary btn-xl" id="sendMessageButton">Solicitar</button>
+                            <button type="submit" class="btn btn-primary btn-xl" id="sendMessageButton" href="#bicishow">Solicitar</button>
                         </a>
                         </div>
                         </form>
@@ -131,6 +132,8 @@ class Request extends Component{
 }
 class PageRequest extends Component {
     render() {
+
+        var bicid = cookie.load('bicicleta')
         return (
             <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
                 <div class="container">
@@ -146,7 +149,7 @@ class PageRequest extends Component {
 
                 <div class="portfolio-modal mfp-hide" id="bicishow">
                 <div class="portfolio-modal-dialog bg-white">
-                    <a class="close-button d-none d-md-block portfolio-modal-dismiss" href="#">
+                    <a class="close-button d-none d-md-block portfolio-modal-dismiss" data-dismiss="modal" href="#">
                          <i class="fa fa-3x fa-times"></i>
                     </a>
                     <div class="container text-center">
@@ -154,8 +157,8 @@ class PageRequest extends Component {
                             <div class="col-lg-8 mx-auto">
                                 <h2 class="text-secondary text-uppercase mb-0">Tu bici es la:</h2>
                                 <hr class="star-dark mb-5" /> 
-                                    <p class="mb-5"> <bicid /> </p>
-                                <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="#">
+                                    <h5 class="mb-5"> {bicid} </h5>
+                                <a class="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" data-dismiss="modal" href="#">
                                 <i class="fa fa-close"></i>
                                 ¡Vamos!</a>
                             </div>
