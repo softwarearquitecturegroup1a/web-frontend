@@ -25,5 +25,8 @@ export default function GraphQLRequest(requestText, handleResponse, handleError)
   }).catch(function (error){
     if (error.response && handleError)
       handleError(error.response.status, error.response.data.errors);
+    else{
+      console.log(error);
+    }
   });
 };
