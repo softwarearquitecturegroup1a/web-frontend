@@ -8,6 +8,7 @@ class Request extends Component{
         this.state = {
             start: '',
             end:''
+            
         };
 
         this.handleEndChange = this.handleEndChange.bind(this);
@@ -44,8 +45,10 @@ class Request extends Component{
           
         });
 
+        var bike = cookie.load('bicicleta')
+
         var updbike = `mutation{
-            updateBicicleta(serial: ${cookie.load('bicicleta')}, bicicleta:{
+            updateBicicleta(serial: ${bike}, bicicleta:{
               estado: "Ocupada"
               ubicacion: ${end}
             }){
@@ -65,7 +68,7 @@ class Request extends Component{
 
         var insertion = `mutation{
             createPrestamo(prestamo:{
-              student_id: ${cookie.load('identification')}
+              student_id: ${cookie.load('identificacion')}
               bici_id: ${cookie.load('bicicleta')}
               solicitud: ${new Date()}
             }){
