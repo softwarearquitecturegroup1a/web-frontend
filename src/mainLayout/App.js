@@ -17,6 +17,7 @@ class App extends Component {
                 <NavBar />
                 <Route path="/" exact component={PageHome} />
                 <Route path="/login" component={PageLogin} />
+                <Route path="/perfil" component={PageProfile} />
                 <Footer />
             </div>
         );
