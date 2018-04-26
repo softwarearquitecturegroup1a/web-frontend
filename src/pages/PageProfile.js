@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import cookie from 'react-cookies';
 import GraphQLRequest from '../graphQLUtils';
 
 class Prestamo extends Component {
-  constructor(props){
-    super(props);
-  }
 
   render(){
 
@@ -60,7 +56,7 @@ class Historial extends Component {
     GraphQLRequest(request,
       function(data){ // SI fue exitosa la consulta
         data.allPrestamos.forEach((prestamo)=>{
-          if (prestamo.student_id === parseInt(props.identificacion)){
+          if (prestamo.student_id === parseInt(props.identificacion, 10)){
             prestamos.push(<Prestamo prestamo={prestamo} consec={consec} key={prestamo.id}/>);
             consec++;
           }
@@ -103,9 +99,9 @@ class PageProfile extends Component {
   constructor(props){
     super(props)
     this.state = {
-      nombre: cookie.load("nombre"),
-      apellido: cookie.load("apellido"),
-      identificacion: cookie.load("identificacion"),
+      nombre: NaN, //cookie.load("nombre"),
+      apellido: NaN, //cookie.load("apellido"),
+      identificacion: NaN, //cookie.load("identificacion"),
     }
   }
 

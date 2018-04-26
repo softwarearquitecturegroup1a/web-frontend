@@ -1,24 +1,36 @@
-import React from 'react';
-import { Router, Route, browserHistory, IndexRoute } from 'react-router'
+import React from 'react'
 import { render } from 'react-dom'
+import { connect, Provider } from 'react-redux'
+import { ConnectedRouter, routerReducer, routerMiddleware, push } from 'react-router-redux'
 
+import { createStore, applyMiddleware, combineReducers } from 'redux'
+import createHistory from 'history/createBrowserHistory'
+
+import { Route, Switch } from 'react-router'
+import { Redirect } from 'react-router-dom'
+
+//layout. There are all pages
 import App from "./mainLayout/App";
 
-// Pages
-import PageHome from './pages/PageHome'
-import PageLogin from './pages/PageLogin'
-import PageProfile from './pages/PageProfile'
-import PageDeliver from './pages/pageDeliver';
-import PageRequest from './pages/pageRequest';
+// Redux
+import { authReducers } from "./reducers"
+
+const history = createHistory()
+
+const allReducers = {
+  routerReducer,
+  authReducers,
+}
+
+const store = createStore(
+  combineReducers(allReducers),
+  applyMiddleware(routerMiddleware(history)),
+)
 
 render((
-  <Router history={browserHistory}>
-    <Route path="/" component={App} >
-      <IndexRoute component={PageHome}/>
-      <Route path="/entregar" component={PageDeliver}/>
-      <Route path="/perfil" component={PageProfile}/>
-      <Route path="/request" component={PageRequest}/>
-      <Route path="/login" component={PageLogin}/>
-    </Route>
-  </Router>
+  <Provider store={store}>
+    <ConnectedRouter history={history}>
+      <Route path="/" component={App} />
+    </ConnectedRouter>
+  </Provider>
 ), document.getElementById('root'))

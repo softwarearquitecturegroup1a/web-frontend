@@ -1,38 +1,39 @@
-import React, { Component } from 'react';
-import GlReuqest from '../graphQLUtils';
-import cookie from 'react-cookies'
+import React, { Component } from 'react'
+import GlReuqest from '../graphQLUtils'
+import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
+import { Redirect } from 'react-router-dom'
+import { ActionsType } from "../reducers";
 
 class Formulario extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: '',
-      identification: '',
-      userError: '',
-      identificationError: '',
+      id: '',
+      pass: '',
+      idError: '',
+      passError: '',
     }
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    // TODO: Enviar peticion al servicio login
-    const user = this.state.user;
-    const identification = this.state.identification;
-    let error = true;
+    const id = this.state.id;
+    const pass = this.state.pass;
 
-    if (!user || user.length < 1) {
-      this.setState({ userError: 'Escriba un usuario valido.' })
-      error = true;
+    if (!id || id.length < 1) {
+      this.setState({ idError: 'Escriba un usuario valido.' })
+      return;
     }
 
-    if (!identification || identification.length < 1) {
-      this.setState({ identificationError: 'Identificacion invalida.' })
-      error = true;
+    if (!pass || pass.length < 1) {
+      this.setState({ passError: 'Identificacion invalida.' })
+      return;
     }
 
     // Ejemplo de uso GraphQL
     var request = `query{
-      userById(id: ${identification}){
+      userById(id: ${id}){
         name
         lastname
         email
@@ -40,43 +41,44 @@ class Formulario extends Component {
       }
     }`
 
-    GlReuqest( 
-      request, 
+    GlReuqest(
+      request,
       (data) => {
-        cookie.save('nombre', data.userById.name, { path: '/', });
-        cookie.save('apellido', data.userById.lastname, { path: '/', });
-        cookie.save('identificacion', data.userById.id_code, { path: '/', });
-        cookie.save('session', identification, { path: '/', });
-      }, 
+        if (data && data.userById) {
+          this.props.onSubmit(data.userById);
+        }
+      },
       (status, data) => {
-        
-      });
+        console.log(`status: ${status}`);
+      }
+    );
   }
 
-  handleUserChange(event) {
-    this.setState({ user: event.target.value });
+  handleIdChange(event) {
+    this.setState({ id: event.target.value });
   }
 
-  handleIdentificationChange(event) {
-    this.setState({ identification: event.target.value });
+  handlePassChange(event) {
+    this.setState({ pass: event.target.value });
   }
 
   render() {
+    
     return (
-      <form name="sentMessage" id="contactForm" noValidate="novalidate" onSubmit={this.handleSubmit.bind(this)} action="/">
+      <form name="sentMessage" id="contactForm" noValidate="novalidate" onSubmit={this.handleSubmit.bind(this)} >
         <div className="control-group">
           <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
-            <label>Usuario</label>
-            <input className="form-control text-center" id="user" type="text" value={this.state.user} placeholder="Usuario" required="required" onChange={this.handleUserChange.bind(this)} />
-            <p className="help-block text-danger">{this.state.userError}</p>
+            <label>Identificación</label>
+            <input className="form-control text-center" type="number" value={this.state.id} placeholder="Identificación" onChange={this.handleIdChange.bind(this)} />
+            <p className="help-block text-danger">{this.state.idError}</p>
           </div>
         </div>
 
         <div className="control-group">
           <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
-            <label>Identificacion</label>
-            <input className="form-control text-center" id="identification" type="number" value={this.state.identification} placeholder="Identificacion" required="required" onChange={this.handleIdentificationChange.bind(this)} />
-            <p className="help-block text-danger">{this.state.identificationError}</p>
+            <label>Password</label>
+            <input className="form-control text-center" type="password" value={this.state.pass} placeholder="Contraseña" onChange={this.handlePassChange.bind(this)} />
+            <p className="help-block text-danger">{this.state.passError}</p>
           </div>
         </div>
         <br />
@@ -89,8 +91,14 @@ class Formulario extends Component {
   }
 }
 
-class PageLogin extends Component {
+class Login extends Component {
   render() {
+    if (this.props.isAuthenticated) {
+      return (
+        <Redirect to='/' />
+      )
+    }
+
     return (
       <section id="contact" style={{ "paddingTop": "calc(6rem + 72px)" }}>
         <div className="container">
@@ -99,7 +107,7 @@ class PageLogin extends Component {
 
           <div className="row">
             <div className="col-lg-8 mx-auto">
-              <Formulario />
+              <Formulario onSubmit={this.props.login}/>
             </div>
           </div>
         </div>
@@ -107,5 +115,20 @@ class PageLogin extends Component {
     );
   }
 }
+
+const PageLogin = connect(
+  state => ({
+    isAuthenticated: state.authReducers.isAuthenticated,
+  }),
+  dispatch => ({
+    login: (info) => {
+      dispatch({
+        type: ActionsType.LOGIN,
+        payload: info,
+      })
+      dispatch(push('/login'))
+    }
+  })
+)(Login)
 
 export default PageLogin;

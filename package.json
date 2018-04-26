@@ -1,14 +1,17 @@
 {
-  "name": "web-frontend",
+  "name": "redux-react",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.3.0",
-    "react-dom": "^16.3.0",
-    "react-scripts": "1.1.2",
-    "react-router": "~3.0.0",
-    "axios": "~0.18.0",
-    "react-cookies": "~0.1.0"
+    "axios": "^0.18.0",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.3.0-rc.2",
+    "react-router-redux": "^5.0.0-alpha.9",
+    "react-scripts": "1.1.4",
+    "redux": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

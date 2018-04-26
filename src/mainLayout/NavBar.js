@@ -1,48 +1,56 @@
 import React, { Component } from 'react';
-import { Link, IndexLink } from "react-router";
-import cookie from 'react-cookies';
+import { connect } from 'react-redux'
+import { NavLink, Link } from "react-router-dom";
+import { ActionsType } from "../reducers";
+import { push } from 'react-router-redux'
 
 class Logo extends Component {
   render() {
     return (
-      <IndexLink className="navbar-brand js-scroll-trigger" to="/">Bici-UN</IndexLink>
+      <NavLink className="navbar-brand js-scroll-trigger" to="/">Bici-UN</NavLink>
     );
   }
 }
 
 function NavBarLink(props) {
 
-  let session = cookie.load("session");
-
-  if (session && props.requireSession) {
+  // let session = cookie.load("session");
+  if (props.render) {
     return (<Link onClick={() => props.onClick ? props.onClick() : null} className={props.className} to={props.to}>{props.value}</Link>)
-  } else if (!session && props.requireNoSession) {
-    return (<Link onClick={() => props.onClick ? props.onClick() : null} className={props.className} to={props.to}>{props.value}</Link>)
-  } else {
-    return "";
   }
+  return '';
 }
 
 class LinksCollapse extends Component {
-
-  handleLogout(event) {
-    cookie.remove('userName', { path: '/', });
-    cookie.remove('session', { path: '/', });
-    console.log("cerrar session");
+  
+  constructor(props){
+    super(props);
+    this.state = {
+      renderLogin: !props.isAuthenticated,
+      renderPerfil: props.isAuthenticated,
+      renderLogout: props.isAuthenticated,
+    }
   }
-
+  static getDerivedStateFromProps(nextProps, prevState){
+    return {
+      renderLogin: !nextProps.isAuthenticated,
+      renderPerfil: nextProps.isAuthenticated,
+      renderLogout: nextProps.isAuthenticated,
+    }
+  }
   render() {
+    console.log(`LinksCollapse.render: ${JSON.stringify(this.state)}`)
     return (
       <div className="collapse navbar-collapse" id="navbarResponsive">
         <ul className="navbar-nav ml-auto">
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireNoSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" value="Login" to="/login" />
+            <NavBarLink render={this.state.renderLogin} className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" value="Login" to="/login" />
           </li>
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/perfil" value="Perfil" />
+            <NavBarLink render={this.state.renderPerfil} className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/perfil" value="Perfil" />
           </li>
           <li className="nav-item mx-0 mx-lg-1">
-            <NavBarLink onClick={this.handleLogout.bind(this)} requireSession className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/" value="Logout" />
+            <NavBarLink render={this.state.renderLogout} onClick={this.props.onLogout} className="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" to="/" value="Logout" />
           </li>
         </ul>
       </div>
@@ -63,18 +71,41 @@ class Menu extends Component {
   }
 }
 
-class NavBar extends Component {
+class ComponentNavBar extends Component {
+
+  constructor(props){
+    super(props)
+    this.state = {
+      isAuthenticated: props.isAuthenticated,
+    }
+  }
+
   render() {
     return (
       <nav className="navbar navbar-expand-lg bg-secondary fixed-top text-uppercase" id="mainNav">
         <div className="container">
           <Logo />
           <Menu />
-          <LinksCollapse />
+          <LinksCollapse isAuthenticated={this.props.isAuthenticated} onLogout={this.props.logout}/>
         </div>
       </nav>
     );
   }
 }
+
+const NavBar = connect(
+  state => ({
+    isAuthenticated: state.authReducers.isAuthenticated
+  }),
+  dispatch => ({
+    logout: () => {
+      console.log("logout")
+      dispatch({
+        type: ActionsType.LOGOUT
+      })
+      dispatch(push('/login'))
+    }
+  })
+)(ComponentNavBar)
 
 export default NavBar;
