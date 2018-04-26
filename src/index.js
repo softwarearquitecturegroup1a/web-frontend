@@ -27,6 +27,12 @@ const store = createStore(
   applyMiddleware(routerMiddleware(history)),
 )
 
+// On close event
+// window.onbeforeunload = confirmExit;
+// function confirmExit() {
+//   return "You have attempted to leave this page. Are you sure?";
+// }
+
 render((
   <Provider store={store}>
     <ConnectedRouter history={history}>

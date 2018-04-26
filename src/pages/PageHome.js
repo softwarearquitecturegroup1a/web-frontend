@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 class BikeAnim extends Component {
   render() {
@@ -23,8 +25,9 @@ class BikeAnim extends Component {
   }
 }
 
-class PageHome extends Component {
-  render() {
+class ComponentPageHome extends Component {
+  
+  landing(){
     return (
       <header className="masthead bg-info text-white text-center">
         <div className="container">
@@ -36,6 +39,20 @@ class PageHome extends Component {
       </header>
     );
   }
+
+  render() {
+    if(!this.props.isAuthenticated)
+      return this.landing();
+    else
+      return <Redirect to='/request' />
+  }
 }
+
+const PageHome = connect(
+  state => ({
+    isAuthenticated: state.authReducers.isAuthenticated,
+  })
+)(ComponentPageHome)
+
 
 export default PageHome;

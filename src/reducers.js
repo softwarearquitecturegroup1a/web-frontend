@@ -13,16 +13,6 @@ const initialState = {
 export const authReducers = (state = initialState, action) => {
   
   switch (action.type) {
-    case ActionsType.AUTH_SUCCESS:
-      return {
-        ...state,
-        isAuthenticated: true
-      }
-    case ActionsType.AUTH_FAIL:
-      return {
-        ...state,
-        isAuthenticated: false
-      }
     case ActionsType.LOGIN:
       if(!action.payload)
         return state

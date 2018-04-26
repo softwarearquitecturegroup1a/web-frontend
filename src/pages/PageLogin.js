@@ -49,7 +49,7 @@ class Formulario extends Component {
         }
       },
       (status, data) => {
-        console.log(`status: ${status}`);
+        console.log(status, data)
       }
     );
   }
