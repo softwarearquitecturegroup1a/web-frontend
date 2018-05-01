@@ -54,7 +54,7 @@ class Historial extends Component {
         <hr size="2px" color="black" />
         <h3 className="text-center text-uppercase text-secondary mb-0">Historial de Prestamos</h3>
         <div className="row">
-          <table className="col-lg-8 mx-auto">
+          <table className="col-lg-8 mx-auto table-striped table-hover">
             <thead>
               <tr>
                 <th>#</th>
