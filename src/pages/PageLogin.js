@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Redirect } from 'react-router-dom'
 import { ActionsType } from "../reducers";
+import { parseValue } from 'graphql';
 
 class Formulario extends Component {
   constructor(props) {
@@ -40,18 +41,39 @@ class Formulario extends Component {
         id_code
       }
     }`
+    var auth = `mutation {
+      auth(auth:{
+        id: "${id}",
+        password: "${pass}"
+      }) {
+        token
+        expire
+      }
+    }`
 
     GlReuqest(
-      request,
+      auth,
       (data) => {
-        if (data && data.userById) {
-          this.props.onSubmit(data.userById);
+        if (data && data.auth) {
+          this.props.onSubmit(data.auth);
         }
       },
       (status, data) => {
         console.log(status, data)
       }
     );
+
+    /* GlReuqest(
+      logged,
+      (data) => {
+        var token = parseValue(data.createLogin.token);
+        var date = parse(data.createLogin.date);
+      },
+      (status, data) => {
+        console.log(status, data)
+      }
+    ); */
+    
   }
 
   handleIdChange(event) {
