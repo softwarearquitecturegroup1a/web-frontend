@@ -18,6 +18,7 @@ class App extends Component {
                 <Route path="/" exact component={PageHome} />
                 <Route path="/login" component={PageLogin} />
                 <Route path="/perfil" component={PageProfile} />
+                <Route path="/prestamo" component={PageRequest} />
                 <Footer />
             </div>
         );

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import GraphQLRequest from '../graphQLUtils';
 
 class SelectOption extends Component {
 
@@ -56,9 +59,10 @@ class Request extends Component {
     )
   }
 }
-class PageRequest extends Component {
+class ComponentPageRequest extends Component {
   render() {
-
+    if(!this.props.isAuthenticated)
+      return <Redirect to="/" />;
     return (
       <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
         <div className="container">
@@ -74,6 +78,13 @@ class PageRequest extends Component {
     );
   }
 }
+
+const PageRequest = connect(
+  state => ({
+    isAuthenticated: state.authReducers.isAuthenticated,
+    user: state.authReducers.user,
+  })
+)(ComponentPageRequest)
 
 export default PageRequest;
 

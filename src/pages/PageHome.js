@@ -44,7 +44,7 @@ class ComponentPageHome extends Component {
     if(!this.props.isAuthenticated)
       return this.landing();
     else
-      return <Redirect to='/request' />
+      return <Redirect to='/prestamo' />
   }
 }
 
