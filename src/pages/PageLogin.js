@@ -45,17 +45,14 @@ class Formulario extends Component {
     GlReuqest(
       auth,
       (data) => {
-        console.log("correcto")
         if (data && data.auth) {
-          this.props.onSubmit(data.auth);
+          this.props.onSubmit(data.auth.token);
         }
-        console.log(data);
       },
       (error) => {
         if(Array.isArray(error)){
           let errors = []
           error.forEach((e) => {
-            console.log(e)
             errors.push(`${e.message}`)
           })
           this.setState({ passError: errors })
