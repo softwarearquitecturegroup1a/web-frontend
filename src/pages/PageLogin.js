@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { Redirect } from 'react-router-dom'
 import { ActionsType } from "../reducers";
-import { parseValue } from 'graphql';
 
 class Formulario extends Component {
   constructor(props) {
@@ -13,7 +12,7 @@ class Formulario extends Component {
       id: '',
       pass: '',
       idError: '',
-      passError: '',
+      passError: [],
     }
   }
 
@@ -33,14 +32,6 @@ class Formulario extends Component {
     }
 
     // Ejemplo de uso GraphQL
-    var request = `query{
-      userById(id: ${id}){
-        name
-        lastname
-        email
-        id_code
-      }
-    }`
     var auth = `mutation {
       auth(auth:{
         id: "${id}",
@@ -54,25 +45,23 @@ class Formulario extends Component {
     GlReuqest(
       auth,
       (data) => {
+        console.log("correcto")
         if (data && data.auth) {
           this.props.onSubmit(data.auth);
         }
+        console.log(data);
       },
-      (status, data) => {
-        console.log(status, data)
+      (error) => {
+        if(Array.isArray(error)){
+          let errors = []
+          error.forEach((e) => {
+            console.log(e)
+            errors.push(`${e.message}`)
+          })
+          this.setState({ passError: errors })
+        }
       }
     );
-
-    /* GlReuqest(
-      logged,
-      (data) => {
-        var token = parseValue(data.createLogin.token);
-        var date = parse(data.createLogin.date);
-      },
-      (status, data) => {
-        console.log(status, data)
-      }
-    ); */
     
   }
 

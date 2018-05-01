@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import GraphQLRequest from '../graphQLUtils';
 
 class Prestamo extends Component {
-
   render() {
 
     return (
@@ -73,42 +72,43 @@ class Historial extends Component {
   }
 }
 
+class Perfil extends Component {
+  render(){
+    return(
+      <div className="container">
+        <h2 className="text-center text-uppercase text-secondary mb-0">Perfil del Usuario</h2>
+        <hr className="star-dark mb-5" />
+
+        <div className="row">
+          <div className="col-lg-8 mx-auto">
+            
+            <div className="control-group">
+              <div className="mb-0 pb-2 ">
+                <h5>Nombre: </h5>
+                <p>{this.props.user.name} {this.props.user.lastname} </p>
+              </div>
+            </div>
+
+            <div className="control-group">
+              <div className="mb-0 pb-2 ">
+                <h5>Documento: {this.props.user.id_code}</h5>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    );
+  }
+}
 
 class ComponentPageProfile extends Component {
 
   perfil() {
     return (
       <section id="perfil" style={{ "paddingTop": "calc(6rem + 72px)" }}>
-        <div className="container">
-          <h2 className="text-center text-uppercase text-secondary mb-0">Perfil del Usuario</h2>
-          <hr className="star-dark mb-5" />
-          <div className="row">
-            <div className="col-lg-8 mx-auto">
-
-              <div className="control-group">
-                <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
-                  <h5 className="text-center">{this.props.user.name}</h5>
-                </div>
-              </div>
-
-              <div className="control-group">
-                <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
-                  <h5 className="text-center">{this.props.user.lastname}</h5>
-                </div>
-              </div>
-
-              <div className="control-group">
-                <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
-                  <h5 className="text-center">Documento: {this.props.user.id_code}</h5>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-
+        <Perfil user={this.props.user} />
         <Historial identificacion={this.props.user.id} />
-
       </section>
 
     );

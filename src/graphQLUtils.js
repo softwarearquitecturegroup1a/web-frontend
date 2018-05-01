@@ -6,7 +6,7 @@ import axios from "axios";
  * @param {function} handleResponse función para manejar la respuesta de graphQL devuelve un objeto con formato GraphQL
  * @param {function} handleError función para manejar la respuesta de graphQL devuelve un objeto con formato GraphQL
  */
-export default function GraphQLRequest(requestText, handleResponse, handleError){
+export default function GraphQLRequest(requestText, handleResponse, handleError) {
 
   var GQl = JSON.stringify({
     query: requestText
@@ -18,14 +18,18 @@ export default function GraphQLRequest(requestText, handleResponse, handleError)
     method: "POST",
     data: GQl,
     responseType: 'json'
-  })
-  .then(function (response) {
-    if(!response.error && handleResponse)
-      handleResponse(response.data.data);
-  }).catch(function (error){
+  }).then((resp) => resp.data
+  ).then(function (response) {
+    if (response.data && handleResponse) {
+      handleResponse(response.data);
+    }
+    if (response.errors && handleError) {
+      handleError(response.errors)
+    }
+  }).catch(function (error) {
     if (error.response && handleError)
       handleError(error.response.status, error.response.data.errors);
-    else{
+    else {
       console.log(error);
     }
   });
