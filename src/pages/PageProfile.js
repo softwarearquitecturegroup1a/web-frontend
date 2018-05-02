@@ -146,7 +146,7 @@ class ComponentPageProfile extends Component {
 
     let requestHistorial = `
     query{
-      allPrestamos(token: "${props.user}"){
+      prestamosbyUser(token: "${props.user}"){
         id
         student_id
         bici_id
@@ -156,7 +156,7 @@ class ComponentPageProfile extends Component {
 
     GraphQLRequest(requestHistorial,
       data => {
-        this.setState({ prestamos: data.allPrestamos })
+        this.setState({ prestamos: data.prestamosbyUser })
       }
     );
 
