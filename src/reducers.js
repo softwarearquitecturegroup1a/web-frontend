@@ -6,8 +6,8 @@ export const ActionsType = {
 }
 
 const initialState = {
-  isAuthenticated: false,
-  user: null
+  isAuthenticated: localStorage.getItem("auth") != null,
+  user: localStorage.getItem("auth")
 }
 
 export const authReducers = (state = initialState, action) => {
@@ -16,12 +16,15 @@ export const authReducers = (state = initialState, action) => {
     case ActionsType.LOGIN:
       if(!action.payload)
         return state
-      return {
+      var st={
         ...state,
         user: action.payload,
         isAuthenticated: true
       }
+      store(st);
+      return st
     case ActionsType.LOGOUT:
+      localStorage.removeItem("auth")
       return {
         ...state,
         user: null,
@@ -30,4 +33,12 @@ export const authReducers = (state = initialState, action) => {
     default:
       return state
   }
+
+  
 }
+function store(props){
+  console.log("Entro store");
+
+  return localStorage.setItem("auth",props.user);
+}
+
