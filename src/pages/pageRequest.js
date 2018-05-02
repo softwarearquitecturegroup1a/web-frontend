@@ -10,11 +10,12 @@ class SelectOption extends Component {
       <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
         <h5 className="text-center">Estacion de inicio</h5>
         <select className="form-control text-center" value={"null"} onChange={this.props.onChange.bind(this)} >
-          <option>Edificio CyT</option>
-          <option>Entrada Calle 26</option>
-          <option>Entrada Edificio Uriel Gutierrez</option>
-          <option>Entrada Calle 53</option>
-          <option>Entrada Calle 45</option>
+          <option value="CyT">Edificio CyT</option>
+          <option value="Central">Biblioteca central</option>
+          <option value="Uriel">Entrada Edificio Uriel Gutierrez</option>
+          <option value="Capilla">Capilla</option>
+          <option value="Estadio">Estadio</option>
+          <option value="Humanas">Facultad de humanas</option>
         </select>
         <p className="help-block text-danger"></p>
       </div>
@@ -22,30 +23,124 @@ class SelectOption extends Component {
   }
 }
 
+function Assigned(props){
+  console.log("As"+props.bike)
+  return <h2>{props.bike}</h2>
+}
+
 class Request extends Component {
 
-  handleStartChange(event) {
-    this.setState({ start: event.target.value });
+  constructor(props){
+    super(props);
+    this.state = {
+      origen: 'CyT',
+      final: 'CyT',
+      origenError: '',
+      finalError: ''
+
+    
+    };
+
+    this.handleStartChange = this.handleStartChange.bind(this);
+    this.handleEndChange = this.handleEndChange.bind(this);
+  }
+
+  handleStartChange(event) { 
+    this.setState({ origen: event.target.value });
     console.log(event.target.value)
   }
 
   handleEndChange(event) {
-    this.setState({ end: event.target.value });
+    this.setState({ final: event.target.value });
     console.log(event.target.value)
   }
 
   handleSubmit(event) {
+    event.preventDefault();
+
+    const origen = this.state.origen;
+    const final = this.state.final;
     console.log("submit data")
+
+    let requestPerfil = `
+    query{
+      userById(token: "${this.props.user}"){
+        id
+        name
+        lastname
+        id_code
+        email
+        id_type
+      }
+    }`;
+
+    GraphQLRequest(requestPerfil,
+      data => {
+        this.setState({ user: data.userById })
+      }
+    );
+    
+    let requestBici = `
+    query{
+      estacionByName(token: "${this.props.user}", name: "${origen}"){
+        serial
+        estado
+        marca
+        color
+      }
+    }`;
+
+    
+
+    GraphQLRequest(requestBici,
+      data => {
+        data.estacionByName.map((bicicleta)=>{
+          if (bicicleta.estado === "Disponible")
+            
+            return this.setState({ bici: bicicleta.serial })
+        })
+        console.log("probando console"+this.state.bici)
+        localStorage.setItem("bici",this.state.bici)
+      }
+    );
+
+    
+    var bicid = localStorage.getItem("bici")
+    console.log("bici "+localStorage.getItem("bici"))
+
+    let requestPres = `
+    mutation{
+      createPrestamo(token: "${this.props.user}", prestamo:{
+        bici_id: ${bicid}
+      }){
+        id
+      }
+    }`;
+
+    GraphQLRequest(requestPres,
+      data => {
+        console.log(data.createPrestamo.id)
+      }
+    );
+
+    console.log("paso "+bicid);
+
+    <Assigned bike={bicid}/>
+
+    
+
+
+    
   }
   
   render() {
     return (
       <form name="sentMessage" id="contactForm" noValidate="novalidate" onSubmit={this.handleSubmit.bind(this)} action="/">
         <div className="control-group">
-          <SelectOption onChange={this.handleStartChange}/>
+          <SelectOption value={this.state.origen} onChange={this.handleStartChange}/>
         </div>
         <div className="control-group">
-          <SelectOption onChange={this.handleEndChange}/>
+          <SelectOption value={this.state.final} onChange={this.handleEndChange}/>
         </div>
         <br />
         <div id="success"></div>
@@ -60,6 +155,15 @@ class Request extends Component {
   }
 }
 class ComponentPageRequest extends Component {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      perfil: null,
+    }  
+  
+  }
+
   render() {
     if(!this.props.isAuthenticated)
       return <Redirect to="/" />;
@@ -70,7 +174,7 @@ class ComponentPageRequest extends Component {
           <hr className="star-dark mb-5" />
           <div className="row">
             <div className="col-lg-8 mx-auto">
-              <Request />
+              <Request user={this.props.user}/>
             </div>
           </div>
         </div>
