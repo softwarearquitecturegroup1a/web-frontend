@@ -219,17 +219,17 @@ class ComponentPageRequest extends Component {
     
     var request = `
     {
-      prestamosbyUser(token: "${this.props.user}"){
+      prestamosPendientes(token: "${this.props.user}"){
         id
       }
     }`;
 
     glRequest(request,
       data => {
-        if (!data.prestamosbyUser) {
+        if (!data.prestamosPendientes) {
           return;
         }
-        this.setState({ prestamos: data.prestamosbyUser }) // Sin prestamos
+        this.setState({ prestamos: data.prestamosPendientes }) // Sin prestamos
       }
     )
   }
