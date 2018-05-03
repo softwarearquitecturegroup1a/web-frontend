@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, Link } from 'react-router-dom'
+import { Redirect, } from 'react-router-dom'
 import { connect } from 'react-redux'
 import glRequest from '../graphQLUtils';
 
@@ -109,6 +109,8 @@ class ComponentPageDeliver extends Component {
 
     glRequest(request);
     glRequest(requestBici);
+    console.log("LISTOS")
+    this.forceUpdate()
   }
 
   render() {
