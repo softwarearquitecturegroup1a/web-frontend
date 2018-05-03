@@ -120,18 +120,48 @@ class Request extends Component {
     const final = this.state.final;
     const disponibles = this.state.bicicletasOrigen
 
-    if (origen === final ) {
+    if (origen === final) {
       this.setState({ finalError: "Cambia las estaciones!" })
       event.preventDefault();
-      return 
+      return
     }
-    
+
     if (!disponibles || disponibles.length < 1) {
       this.setState({ finalError: "No hay bicicletas disponibles en esta estación" })
       event.preventDefault();
-      return 
+      return
     }
-    
+
+    // Apartar bicicleta 
+
+    var requestBici = `
+    mutation{
+      updateBicicleta(token: "${this.props.user}", serial: ${disponibles[0].serial}, 
+      bicicleta:{
+        estado: "Ocupado"
+        ubicacion: "${final}"
+      }){
+        serial
+      }
+    }`;
+
+
+    await glRequest(requestBici,
+      data => {
+        if (!data.updateBicicleta) {
+          this.setState({ finalError: "No hemos podido aparatar tu bici D=" })
+          event.preventDefault();
+        } else {
+
+        }
+      }
+    )
+
+    if (this.state.finalError || this.state.origenError)
+      return;
+
+    // Crear el prestamo
+
     var request = `
     mutation{
       createPrestamo(token: "${this.props.user}", prestamo: {
@@ -141,17 +171,20 @@ class Request extends Component {
         solicitud
       }
     }`;
-    
+
     await glRequest(request,
       data => {
-        if(!data.createPrestamo){
+        if (!data.createPrestamo) {
           this.setState({ finalError: "Algo ha salido mal con tu prestamo D=" })
           event.preventDefault();
-        }else{
+        } else {
 
         }
       }
     )
+    if (this.state.finalError || this.state.origenError) {
+      return
+    }
   }
 
   render() {
@@ -180,9 +213,44 @@ class Request extends Component {
 }
 class ComponentPageRequest extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      prestamos: []
+    }
+  }
+
+  componentDidMount(){
+    
+    console.log("didMount")
+    var request = `
+    {
+      prestamosbyUser(token: "${this.props.user}"){
+        id
+      }
+    }`;
+
+    glRequest(request,
+      data => {
+        console.log(data)
+        if (!data.prestamosbyUser) {
+          return;
+        }
+        this.setState({ prestamos: data.prestamosbyUser }) // Sin prestamos
+      }
+    )
+  }
+
   render() {
-    if (!this.props.isAuthenticated)
+
+    if (!this.props.isAuthenticated){
       return <Redirect to="/" />;
+    }
+    console.log(this.state.prestamos)
+    if(this.state.prestamos.length > 0){
+      return <Redirect to="/timer" />;
+    }
+
     return (
       <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
         <div className="container">
