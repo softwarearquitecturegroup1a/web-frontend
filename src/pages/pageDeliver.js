@@ -8,14 +8,18 @@ class Deliver extends Component {
         super(props)
         this.state = {
           perfil: null,
+          idPres: null,
+          idPresError: '',
+          bikes: null
         }  
       
     }
 
-    handleSubmit(event){
+    async handleSubmit(event){
         event.preventDefault();
 
         console.log("submit data")
+        const bicis = this.state.bikes;
 
         let requestPendientes = `
         query{
@@ -29,29 +33,36 @@ class Deliver extends Component {
 
         GraphQLRequest(requestPendientes,
             data => {
-                var otr = data.prestamosPendientes.id;
-                console.log(otr)
-                localStorage.setItem("pres",data.prestamosPendientes.id)
+                var msg;
+                if (!data.prestamosPendientes) {
+                    msg = "No hay pendientes"
+                    console.log(msg)
+                }
+
+                var bicisPen = []
+                bicisPen = data.prestamosPendientes;
+                this.setState({ idPresError: msg, bikes: bicisPen })
+                
             }
             
         );
 
-        console.log(localStorage.getItem("pres").bici_id)
+        
 
-            let requestEntregar = `
-            mutation{
-                entregarPrestamo(token: "${this.props.user}", id:${localStorage.getItem("pres").id}){
-                bici_id
-                }
-            }`;
+        let requestEntregar = `
+        mutation{
+            entregarPrestamo(token: "${this.props.user}", id:${bicis[0].id}){
+            bici_id
+            }
+        }`;
             
-            GraphQLRequest(requestEntregar,
-                data => {
-                console.log(data.entregarPrestamo.bici_id)
-                }
-            );
+        GraphQLRequest(requestEntregar,
+            data => {
+            console.log(data.entregarPrestamo.bici_id)
+            }
+        );
 
-            localStorage.removeItem("pres")
+        
         
 
     }
