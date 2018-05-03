@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom'
+import { Redirect, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import glRequest from '../graphQLUtils';
 
@@ -88,7 +88,27 @@ class ComponentPageDeliver extends Component {
   }
 
   handleClick(event){
+    const pendiente = this.state.pendientes[0];
+
+    let request = `
+    mutation{
+      entregarPrestamo(token: "${this.props.user}", id: ${pendiente.id}){
+        entrega
+      }
+    }`;
     
+    let requestBici = `
+    mutation{
+      updateBicicleta(token: "${this.props.user}", serial: ${pendiente.bici_id}, bicicleta: {
+        estado: "Disponible"  
+      }){
+        estado
+      }
+    }
+    `;
+
+    glRequest(request);
+    glRequest(requestBici);
   }
 
   render() {

@@ -109,8 +109,6 @@ class Request extends Component {
   }
 
   async handleSubmit(event) {
-    // 
-    event.preventDefault();
     const origen = this.state.origen;
     const final = this.state.final;
     const disponibles = this.state.bicicletasOrigen
