@@ -19,6 +19,7 @@ class App extends Component {
                 <Route path="/login" component={PageLogin} />
                 <Route path="/perfil" component={PageProfile} />
                 <Route path="/prestamo" component={PageRequest} />
+                <Route path="/entregar" component={PageDeliver} />
                 <Footer />
             </div>
         );
