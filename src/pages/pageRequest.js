@@ -25,11 +25,6 @@ class SelectOption extends Component {
   }
 }
 
-function Assigned(props) {
-  console.log("As" + props.bike)
-  return <h2>{props.bike}</h2>
-}
-
 class Request extends Component {
 
   constructor(props) {
@@ -222,7 +217,6 @@ class ComponentPageRequest extends Component {
 
   componentDidMount(){
     
-    console.log("didMount")
     var request = `
     {
       prestamosbyUser(token: "${this.props.user}"){
@@ -232,7 +226,6 @@ class ComponentPageRequest extends Component {
 
     glRequest(request,
       data => {
-        console.log(data)
         if (!data.prestamosbyUser) {
           return;
         }
@@ -246,7 +239,6 @@ class ComponentPageRequest extends Component {
     if (!this.props.isAuthenticated){
       return <Redirect to="/" />;
     }
-    console.log(this.state.prestamos)
     if(this.state.prestamos.length > 0){
       return <Redirect to="/timer" />;
     }
