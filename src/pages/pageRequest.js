@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom'
 import { connect } from 'react-redux'
-import GraphQLRequest from '../graphQLUtils';
+import glRequest from '../graphQLUtils';
 
 class SelectOption extends Component {
 
-  render(){
+  render() {
     return (
       <div className="form-group floating-label-form-group controls mb-0 pb-2 text-center">
         <h5 className="text-center">Estacion de {this.props.name}</h5>
-        <select className="form-control text-center" value={"null"} onChange={this.props.onChange.bind(this)} >
+        <select className="form-control text-center" value={this.props.value} onChange={this.props.onChange} >
           <option value="CyT">Edificio CyT</option>
           <option value="Central">Biblioteca central</option>
           <option value="Uriel">Entrada Edificio Uriel Gutierrez</option>
@@ -17,178 +17,197 @@ class SelectOption extends Component {
           <option value="Estadio">Estadio</option>
           <option value="Humanas">Facultad de humanas</option>
         </select>
-        <p className="help-block text-danger"></p>
+        <p className="help-block text-danger">
+          {this.props.error}
+        </p>
       </div>
     )
   }
 }
 
-function Assigned(props){
-  console.log("As"+props.bike)
+function Assigned(props) {
+  console.log("As" + props.bike)
   return <h2>{props.bike}</h2>
 }
 
 class Request extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-      origen: 'Uriel',
+      origen: 'CyT',
       final: 'CyT',
       origenError: '',
-      finalError: ''
+      finalError: '',
+      bicicletasOrigen: null
+    }
 
-    
-    };
+    var request = `
+    {
+      estacionByName(token: "${this.props.user}", name: "${this.state.origen}"){
+        serial
+        marca
+        estado
+      }
+    }`;
 
-    this.handleStartChange = this.handleStartChange.bind(this);
-    this.handleEndChange = this.handleEndChange.bind(this);
+    glRequest(request,
+      data => {
+        var msg;
+        if (!data.estacionByName) {
+          msg = "No hay bicicletas disponibles en esta estación"
+        }
+
+        var bicisDisponibles = []
+        data.estacionByName.forEach(bici => {
+          if (bici.estado === "Disponible") {
+            bicisDisponibles.push(bici)
+          }
+        })
+
+        if (bicisDisponibles.length < 1) {
+          msg = "No hay bicicletas disponibles en esta estación"
+        }
+
+        this.setState({ origenError: msg, bicicletasOrigen: bicisDisponibles })
+      }
+    );
   }
 
-  handleStartChange(event) { 
-    this.setState({ origen: event.target.value });
-    console.log(event.target.value)
+  handleStartChange(event) {
+    const origen = event.target.value
+
+    var request = `
+    {
+      estacionByName(token: "${this.props.user}", name: "${origen}"){
+        serial
+        marca
+        estado
+      }
+    }`;
+
+    glRequest(request,
+      data => {
+        var msg;
+        if (!data.estacionByName) {
+          msg = "No hay bicicletas disponibles en esta estación"
+        }
+
+        var bicisDisponibles = []
+        data.estacionByName.forEach(bici => {
+          if (bici.estado === "Disponible") {
+            bicisDisponibles.push(bici)
+          }
+        })
+
+        if (bicisDisponibles.length < 1) {
+          msg = "No hay bicicletas disponibles en esta estación"
+        }
+
+        this.setState({ origen: origen, origenError: msg, bicicletasOrigen: bicisDisponibles })
+      }
+    );
   }
 
   handleEndChange(event) {
     this.setState({ final: event.target.value });
-    console.log(event.target.value)
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
+    // 
     event.preventDefault();
-
     const origen = this.state.origen;
     const final = this.state.final;
-    console.log("submit data")
+    const disponibles = this.state.bicicletasOrigen
 
-    let requestPerfil = `
-    query{
-      userById(token: "${this.props.user}"){
-        id
-        name
-        lastname
-        id_code
-        email
-        id_type
-      }
-    }`;
-
-    GraphQLRequest(requestPerfil,
-      data => {
-        this.setState({ user: data.userById })
-      }
-    );
-    
-    let requestBici = `
-    query{
-      estacionByName(token: "${this.props.user}", name: "${origen}"){
-        serial
-        estado
-        marca
-        color
-      }
-    }`;
-
-    
-
-    GraphQLRequest(requestBici,
-      data => {
-        data.estacionByName.map((bicicleta)=>{
-          if (bicicleta.estado === "Disponible")
-            
-            this.setState({ bici: bicicleta.serial })
-        })
-        console.log("probando console"+this.state.bici)
-        if (this.state.bici != null)
-         return localStorage.setItem("bici",this.state.bici)
-        else
-         return localStorage.setItem("ndis","No hay bicicletas disponibles en esta estacion")
-      }
-    );
-
-    if(localStorage.getItem("bici") != null){
-       
-      
-      var test = localStorage.getItem("bici")
-      console.log("bici "+test)
-      this.setState({ bicid: test })
-      localStorage.setItem("bici",test)
-
-
-      localStorage.removeItem("bici")
-
-      let requestPres = `
-      mutation{
-        createPrestamo(token: "${this.props.user}", prestamo:{
-          bici_id: ${test}
-        }){
-          id
-        }
-      }`;
-
-      GraphQLRequest(requestPres,
-        data => {
-          console.log(data.createPrestamo.id)
-        }
-      );
-
-      console.log("paso "+this.state.bicid);;
-    } else if(localStorage.getItem("ndis")!= null){
-      this.setState({ bicid: localStorage.getItem("ndis") })
-      localStorage.removeItem("ndis")
+    if (origen === final) {
+      this.setState({ finalError: "Cambia las estaciones!" })
+      event.preventDefault();
+      return
     }
 
-    
+    if (!disponibles || disponibles.length < 1) {
+      this.setState({ finalError: "No hay bicicletas disponibles en esta estación" })
+      event.preventDefault();
+      return
+    }
+
+    // Apartar bicicleta 
+
+    var requestBici = `
+    mutation{
+      updateBicicleta(token: "${this.props.user}", serial: ${disponibles[0].serial}, 
+      bicicleta:{
+        estado: "Ocupado"
+        ubicacion: "${final}"
+      }){
+        serial
+      }
+    }`;
 
 
-    
+    await glRequest(requestBici,
+      data => {
+        if (!data.updateBicicleta) {
+          this.setState({ finalError: "No hemos podido aparatar tu bici D=" })
+          event.preventDefault();
+        } else {
+
+        }
+      }
+    )
+
+    if (this.state.finalError || this.state.origenError)
+      return;
+
+    // Crear el prestamo
+
+    var request = `
+    mutation{
+      createPrestamo(token: "${this.props.user}", prestamo: {
+        bici_id: ${disponibles[0].serial}
+      }){
+        id
+        solicitud
+      }
+    }`;
+
+    await glRequest(request,
+      data => {
+        if (!data.createPrestamo) {
+          this.setState({ finalError: "Algo ha salido mal con tu prestamo D=" })
+          event.preventDefault();
+        } else {
+
+        }
+      }
+    )
+    if (this.state.finalError || this.state.origenError) {
+      return
+    }
   }
-  
+
   render() {
     return (
       <section className="portfolio" >
-        
-        <form name="sentMessage" id="contactForm" noValidate="novalidate" onSubmit={this.handleSubmit.bind(this)} action="/">
+
+        <form name="sentMessage" id="contactForm" onSubmit={this.handleSubmit.bind(this)} action="/timer">
           <div className="control-group">
-            <SelectOption value={this.state.origen} name={"Inicio"} onChange={this.handleStartChange}/>
+            <SelectOption value={this.state.origen} name={"Inicio"} onChange={this.handleStartChange.bind(this)}
+              error={this.state.origenError} />
           </div>
           <div className="control-group">
-            <SelectOption value={this.state.final} name={"Final"} onChange={this.handleEndChange}/>
+            <SelectOption value={this.state.final} name={"Final"} onChange={this.handleEndChange.bind(this)}
+              error={this.state.finalError} />
           </div>
           <br />
-          <div id="success"></div>
           <div className="form-group text-center">
             <a className="portfolio-item d-block mx-auto" href="#bicishow">
               <button type="submit" className="btn btn-primary btn-xl" id="sendMessageButton" href="#bicishow">Solicitar</button>
             </a>
           </div>
         </form>
-
-        <div className="portfolio-modal mfp-hide" id="bicishow">
-          <div className="portfolio-modal-dialog bg-white">
-            <a className="close-button d-none d-md-block portfolio-modal-dismiss" href="/entregar">
-              <i className="fa fa-3x fa-times"></i>
-            </a>
-            <div className="container text-center">
-              <div className="row">
-                <div className="col-lg-8 mx-auto">
-                  <h2 className="text-secondary text-uppercase mb-0">Tu bicicleta es:</h2>
-                  <hr className="star-dark mb-5"/>
-                  <p className="mb-5">{this.state.bicid}</p>
-                  <a className="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="/entregar">
-                    <i className="fa fa-close"></i>
-                    Entendido</a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </section>
-      
-
-      
-
     )
   }
 }
@@ -197,14 +216,41 @@ class ComponentPageRequest extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      perfil: null,
-    }  
-  
+      prestamos: []
+    }
+  }
+
+  componentDidMount(){
+    
+    console.log("didMount")
+    var request = `
+    {
+      prestamosbyUser(token: "${this.props.user}"){
+        id
+      }
+    }`;
+
+    glRequest(request,
+      data => {
+        console.log(data)
+        if (!data.prestamosbyUser) {
+          return;
+        }
+        this.setState({ prestamos: data.prestamosbyUser }) // Sin prestamos
+      }
+    )
   }
 
   render() {
-    if(!this.props.isAuthenticated)
+
+    if (!this.props.isAuthenticated){
       return <Redirect to="/" />;
+    }
+    console.log(this.state.prestamos)
+    if(this.state.prestamos.length > 0){
+      return <Redirect to="/timer" />;
+    }
+
     return (
       <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
         <div className="container">
@@ -212,7 +258,7 @@ class ComponentPageRequest extends Component {
           <hr className="star-dark mb-5" />
           <div className="row">
             <div className="col-lg-8 mx-auto">
-              <Request user={this.props.user}/>
+              <Request user={this.props.user} />
             </div>
           </div>
         </div>
@@ -241,4 +287,25 @@ export default PageRequest;
         ¡Vamos!</a>
     </div>
   </div>
-</div> */
+</div> 
+----------------------------------
+<div className="portfolio-modal mfp-hide" id="bicishow">
+  <div className="portfolio-modal-dialog bg-white">
+    <a className="close-button d-none d-md-block portfolio-modal-dismiss" href="/entregar">
+      <i className="fa fa-3x fa-times"></i>
+    </a>
+    <div className="container text-center">
+      <div className="row">
+        <div className="col-lg-8 mx-auto">
+          <h2 className="text-secondary text-uppercase mb-0">Tu bicicleta es:</h2>
+          <hr className="star-dark mb-5"/>
+          <p className="mb-5">{this.state.bicid}</p>
+          <a className="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="/entregar">
+            <i className="fa fa-close"></i>
+            Entendido</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+*/
