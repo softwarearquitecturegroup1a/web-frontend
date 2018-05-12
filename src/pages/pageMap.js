@@ -19,12 +19,12 @@ const MyMapComponent = compose(
     defaultZoom={16}
     defaultCenter={{ lat: 4.636773, lng: -74.083626 }}
   >
-    {props.isMarkerShown && <Marker position={{ lat: 4.638397, lng: -74.084639 }} onClick={props.onMarkerClick} /> }
-    {props.isMarkerShown && <Marker position={{ lat: 4.635365, lng: -74.082960 }} onClick={props.onMarkerClick} />}
-    {props.isMarkerShown && <Marker position={{ lat: 4.639648, lng: -74.089038 }} onClick={props.onMarkerClick} />}
-    {props.isMarkerShown && <Marker position={{ lat: 4.633482, lng: -74.081822 }} onClick={props.onMarkerClick} />}
-    {props.isMarkerShown && <Marker position={{ lat: 4.639379, lng: -74.086741 }} onClick={props.onMarkerClick} />}
-    {props.isMarkerShown && <Marker position={{ lat: 4.634253, lng: -74.084782 }} onClick={props.onMarkerClick} />}
+     <Marker position={{ lat: 4.638397, lng: -74.084639 }} onClick={props.onMarkerClick} />
+     <Marker position={{ lat: 4.635365, lng: -74.082960 }} onClick={props.onMarkerClick} />
+     <Marker position={{ lat: 4.639648, lng: -74.089038 }} onClick={props.onMarkerClick} />
+     <Marker position={{ lat: 4.633482, lng: -74.081822 }} onClick={props.onMarkerClick} />
+     <Marker position={{ lat: 4.639379, lng: -74.086741 }} onClick={props.onMarkerClick} />
+     <Marker position={{ lat: 4.634253, lng: -74.084782 }} onClick={props.onMarkerClick} />
 
   </GoogleMap>
 )
@@ -44,10 +44,16 @@ class PageMap extends Component {
 
   render() {
     return (
-      <MyMapComponent
-        isMarkerShown={this.state.isMarkerShown}
-        onMarkerClick={this.handleMarkerClick}
-      />
+        <section id="request" style={{ "paddingTop": "calc(6rem + 72px)" }} >
+            <div className="container">
+                <h2 className="text-center text-uppercase text-secondary mb-0">Encuentra nuestras estaciones</h2>
+                <hr className="star-dark mb-5" />
+                <MyMapComponent
+                    isMarkerShown={this.state.isMarkerShown}
+                    onMarkerClick={this.handleMarkerClick}
+                />
+            </div>
+        </section>
     )
   }
 }
