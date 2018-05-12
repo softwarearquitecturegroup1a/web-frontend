@@ -9,6 +9,7 @@ import PageLogin from '../pages/PageLogin'
 import PageProfile from '../pages/PageProfile'
 import PageDeliver from '../pages/pageDeliver'
 import PageRequest from '../pages/pageRequest'
+import PageMap from '../pages/pageMap'
 
 class App extends Component {
     render() {
@@ -20,6 +21,7 @@ class App extends Component {
                 <Route path="/perfil" component={PageProfile} />
                 <Route path="/prestamo" component={PageRequest} />
                 <Route path="/timer" component={PageDeliver} />
+                <Route path="/map" component={PageMap} />
                 <Footer />
             </div>
         );
