@@ -1,5 +1,5 @@
 import axios from "axios";
-
+var server = null;
 /**
  * 
  * @param {String} requestText String con la petición
@@ -12,14 +12,16 @@ export default function GraphQLRequest(requestText, handleResponse, handleError)
     query: requestText
   });
 
+  server = server || localStorage.getItem("server");
+  
   axios({
     headers: { 'Content-Type': 'application/json' },
-    url: "http://35.193.172.140/graphql",
+    url: `http://${server}/graphql`,
     method: "POST",
     data: GQl,
     responseType: 'json'
   }).then((resp) => resp.data
-  ).then(function (response) {
+).then(function (response) {
     if (response.data && handleResponse) {
       handleResponse(response.data);
     }
@@ -28,7 +30,7 @@ export default function GraphQLRequest(requestText, handleResponse, handleError)
     }
   }).catch(function (error) {
     if (error.response && handleError)
-      handleError(error.response.status, error.response.data.errors);
+    handleError(error.response.status, error.response.data.errors);
     else {
       console.log(error);
     }

@@ -109,7 +109,6 @@ class Request extends Component {
   }
 
   async handleSubmit(event) {
-    event.preventDefault();
     const origen = this.state.origen;
     const final = this.state.final;
     const disponibles = this.state.bicicletasOrigen
@@ -266,37 +265,3 @@ const PageRequest = connect(
 )(ComponentPageRequest)
 
 export default PageRequest;
-
-/* <div className="container text-center">
-  <div className="row">
-    <div className="col-lg-8 mx-auto">
-      <h2 className="text-secondary text-uppercase mb-0">Tu bici es la:</h2>
-      <hr className="star-dark mb-5" />
-      <h5 className="mb-5"> {bicid} </h5>
-      <a className="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" data-dismiss="modal">
-        <i className="fa fa-close"></i>
-        ¡Vamos!</a>
-    </div>
-  </div>
-</div> 
-----------------------------------
-<div className="portfolio-modal mfp-hide" id="bicishow">
-  <div className="portfolio-modal-dialog bg-white">
-    <a className="close-button d-none d-md-block portfolio-modal-dismiss" href="/entregar">
-      <i className="fa fa-3x fa-times"></i>
-    </a>
-    <div className="container text-center">
-      <div className="row">
-        <div className="col-lg-8 mx-auto">
-          <h2 className="text-secondary text-uppercase mb-0">Tu bicicleta es:</h2>
-          <hr className="star-dark mb-5"/>
-          <p className="mb-5">{this.state.bicid}</p>
-          <a className="btn btn-primary btn-lg rounded-pill portfolio-modal-dismiss" href="/entregar">
-            <i className="fa fa-close"></i>
-            Entendido</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-*/
