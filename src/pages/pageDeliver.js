@@ -118,12 +118,10 @@ class ComponentPageDeliver extends Component {
       return <Redirect to="/" />;
     }
 
-    if (this.state.pendientes.length == 0){
+    if (this.state.pendientes.length === 0){
       return this.sinPendientes();
     }
     
-    const solicitud = this.state.pendientes[0].solicitud
-    const biciId = this.state.pendientes[0].bici_id
     const start = this.state.solicitud
     console.log(start)
 
